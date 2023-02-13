@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 const library = [];
 
 const newBookBtn = document.querySelector(".new-book-btn");
@@ -12,11 +13,14 @@ function Book(author, title, pages, isRead) {
   this.isRead = isRead;
 }
 
-function createTableRow(bookValues) {
+function createTableRow(bookValues, index) {
   const tableRow = document.createElement("tr");
+  tableRow.dataset.bookIndex = index;
+
   const deleteBtnTableCell = document.createElement("td");
   const deleteBtn = document.createElement("button");
   deleteBtn.textContent = "Remove";
+  deleteBtn.addEventListener("click", removeBookFromLibrary);
 
   bookValues.forEach((value) => {
     const tableCell = document.createElement("td");
@@ -33,10 +37,15 @@ function createTableRow(bookValues) {
 function updateBooksTable() {
   booksTableBody.replaceChildren();
 
-  library.forEach((book) => {
+  library.forEach((book, index) => {
     const bookValues = Object.values(book);
-    createTableRow(bookValues);
+    createTableRow(bookValues, index);
   });
+}
+
+function removeBookFromLibrary(event) {
+  library.splice(event.target.parentNode.parentNode.dataset.bookIndex, 1);
+  updateBooksTable();
 }
 
 function addBookToLibrary() {
