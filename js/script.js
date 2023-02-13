@@ -1,6 +1,8 @@
 const library = [];
 
-const addBookForm = document.querySelector(".books-form");
+const newBookBtn = document.querySelector(".new-book-btn");
+const addBookDialog = document.querySelector(".add-book-modal");
+const addBookForm = document.querySelector(".add-book-form");
 const booksTableBody = document.querySelector(".books-table > .table-body");
 
 function Book(author, title, pages, isRead) {
@@ -14,7 +16,7 @@ function createTableRow(bookValues) {
   const tableRow = document.createElement("tr");
   const deleteBtnTableCell = document.createElement("td");
   const deleteBtn = document.createElement("button");
-  deleteBtn.textContent = "Delete";
+  deleteBtn.textContent = "Remove";
 
   bookValues.forEach((value) => {
     const tableCell = document.createElement("td");
@@ -37,9 +39,7 @@ function updateBooksTable() {
   });
 }
 
-function addBookToLibrary(event) {
-  event.preventDefault();
-
+function addBookToLibrary() {
   const author = document.querySelector("#author").value;
   const title = document.querySelector("#title").value;
   const pages = document.querySelector("#pages").value;
@@ -57,4 +57,7 @@ function addBookToLibrary(event) {
   }
 }
 
+newBookBtn.addEventListener("click", () => {
+  addBookDialog.showModal();
+});
 addBookForm.addEventListener("submit", addBookToLibrary);
