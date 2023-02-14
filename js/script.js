@@ -13,7 +13,13 @@ function Book(author, title, pages, isRead) {
   this.isRead = isRead;
 }
 
-function createTableRow(bookValues, index) {
+function toggleReadStatus(event) {
+  const index = event.target.parentNode.parentNode.dataset.bookIndex;
+  library[index].isRead = !library[index].isRead;
+  updateBooksTable();
+}
+
+function createBookEntry(bookEntries, index) {
   const tableRow = document.createElement("tr");
   tableRow.dataset.bookIndex = index;
 
@@ -22,11 +28,27 @@ function createTableRow(bookValues, index) {
   deleteBtn.textContent = "Remove";
   deleteBtn.addEventListener("click", removeBookFromLibrary);
 
-  bookValues.forEach((value) => {
+  bookEntries.forEach(([key, value]) => {
     const tableCell = document.createElement("td");
-    const tableCellContent = document.createTextNode(value);
+
+    if (key === "isRead") {
+      const toggleReadBtn = document.createElement("button");
+      toggleReadBtn.addEventListener("click", toggleReadStatus);
+
+      console.log(`Key: ${key}, Value: ${value}, typeOfValue: ${typeof value}`);
+      if (value) {
+        toggleReadBtn.textContent = "Read";
+      } else {
+        toggleReadBtn.textContent = "Not Read";
+      }
+
+      tableCell.append(toggleReadBtn);
+    } else {
+      const tableCellContent = document.createTextNode(value);
+      tableCell.append(tableCellContent);
+    }
+
     tableRow.append(tableCell);
-    tableCell.append(tableCellContent);
   });
 
   deleteBtnTableCell.append(deleteBtn);
@@ -38,8 +60,8 @@ function updateBooksTable() {
   booksTableBody.replaceChildren();
 
   library.forEach((book, index) => {
-    const bookValues = Object.values(book);
-    createTableRow(bookValues, index);
+    const bookEntries = Object.entries(book);
+    createBookEntry(bookEntries, index);
   });
 }
 
@@ -52,7 +74,7 @@ function addBookToLibrary() {
   const author = document.querySelector("#author").value;
   const title = document.querySelector("#title").value;
   const pages = document.querySelector("#pages").value;
-  const isRead = document.querySelector("#is-read").value;
+  const isRead = document.querySelector("#is-read").value === "true";
 
   const book = new Book(author, title, pages, isRead);
 
